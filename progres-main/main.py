@@ -387,6 +387,7 @@ def lihat_kelas():
 
 def menu_mahasiswa(menu_title, nama_file, kolom):
     clear()
+    kolom_akun = ["Username", "Password"]
     while True:
 
         print(f'''
@@ -409,7 +410,7 @@ def menu_mahasiswa(menu_title, nama_file, kolom):
         if pilihan == "1":
             menu_kelola_data(menu_title, nama_file, kolom)
         elif pilihan == "2":
-            login_user_mahasiswa()
+            menu_kelola_data('Akun Mahasiswa', 'akun_mahasiswa.csv', kolom_akun)
         elif pilihan == "3":
             main_menu_admin()
         elif pilihan == "4":
@@ -418,121 +419,6 @@ def menu_mahasiswa(menu_title, nama_file, kolom):
         else:
             input("Pilihan tidak valid. Klik \"ENTER\" untuk coba lagi.")
             menu_kelola_data(menu_title, nama_file, kolom)
-
-
-
-def tampilkan_akun():
-    nama_file = 'akun_mahasiswa.csv'
-    if os.path.exists(nama_file):
-        df = pd.read_csv(nama_file)
-        df.index += 1
-
-        if df.empty:
-            print(df)
-            print("Tidak ada data untuk ditampilkan.")
-        else:
-            # Tampilkan data dalam format tabel
-            print(tabulate(df, headers='keys', tablefmt='grid', colalign=["center"] * len(df.columns)))  # Panggil fungsi `data` untuk menampilkan tabel
-    else:
-        # Jika file tidak ditemukan, beri pesan
-        print(f"File {nama_file} tidak ditemukan. Belum ada data.")
-        input("\nKlik \"ENTER\" untuk kembali ke menu.")
-
-def login_user_mahasiswa():
-    clear()
-    nama_file = 'akun_mahasiswa.csv'
-
-    print("="*60)
-    print("LOGIN MAHASISWA".center(60))
-    print("="*60)
-    
-    # Cek apakah file CSV ada
-    if not os.path.exists(nama_file):
-        print(f"File {nama_file} tidak ditemukan.")
-        return
-
-    # Baca file CSV
-    df = pd.read_csv(nama_file)
-    print(df)
-    print(f'''
-    {"="*60}
-    |{"A C A D E M I X".center(58)}|
-    |{"Sistem Informasi Akademik".center(58)}|
-    {'='*60}  
-    |{f"Dashboard Kelas".center(58)}|
-    |{"-"*58}|
-    |{"[1]. Tampilkan Data".ljust(58)}|
-    |{"[2]. Tambah Data".ljust(58)}|
-    |{"[3]. Ubah Data".ljust(58)}|
-    |{"[4]. Hapus Data".ljust(58)}|
-    |{"[5]. Kembali".ljust(58)}|
-    |{"[6]. Keluar".ljust(58)}|
-    {'='*60}
-    ''')
-
-
-    pilihan = input("Masukkan pilihan: ").strip()
-
-    if pilihan == "1":
-        tampilkan_akun()
-        input("\nKlik \"ENTER\" untuk kembali ke menu.")
-        login_user_mahasiswa() # Navigasi kembali ke menu
-
-
-    elif pilihan == "2":
-        # Daftar Mahasiswa Baru (Create)
-        username_new = input('Masukkan Username Baru: ').strip()
-        password_new = input('Masukkan Password Baru: ').strip()
-        # Pastikan username belum ada
-        if username_new in df['Username'].values:
-            print(f"Username '{username_new}' sudah terdaftar.")
-        else:
-            new_data = pd.DataFrame([[username_new, password_new]], columns=df.columns)
-            df = pd.concat([df, new_data], ignore_index=True)
-            df.to_csv(nama_file, index=False)
-            print(f"Mahasiswa dengan Username '{username_new}' berhasil terdaftar.")
-
-    elif pilihan == "3":
-        tampilkan_akun()
-        # Ubah Password (Update)
-        username_target = int(input('Masukkan Username untuk mengubah password: '))
-        if username_target not in df['Username'].values:
-            print(f"Username '{username_target}' tidak ditemukan.")
-        else:
-            password_lama = input('Masukkan Password Lama: ').strip()
-            user_data = df.loc[df['Username'] == username_target]
-            if user_data.iloc[0]['Password'] != password_lama:
-                print("Password lama tidak sesuai.")
-            else:
-                password_baru = input('Masukkan Password Baru: ').strip()
-                df.loc[df['Username'] == username_target, 'Password'] = password_baru
-                df.to_csv(nama_file, index=False)
-                print(f"Password untuk username '{username_target}' berhasil diubah.")
-
-    elif pilihan == "4":
-        tampilkan_akun()
-        # Hapus Akun (Delete)
-        username_target = int(input('Masukkan Username untuk dihapus: '))
-        if username_target not in df['Username'].values:
-            print(f"Username '{username_target}' tidak ditemukan.")
-        else:
-            df = df[df['Username'] != username_target]  # Menghapus row berdasarkan username
-            df.to_csv(nama_file, index=False)
-            print(f"Mahasiswa dengan Username '{username_target}' berhasil dihapus.")
-
-    elif pilihan == "5":
-        return  # Kembali ke menu kelas
-
-    elif pilihan == "6":
-        exit()  # Keluar dari aplikasi
-
-    else:
-        input("Pilihan tidak valid. Tekan Enter untuk coba lagi.")
-
-
-
-
-
 
 
 
@@ -578,28 +464,56 @@ def tambah_data(menu_title, nama_file, kolom):
 
         # Input data baru
         data_baru = {}
-        for kol in kolom:
-            data_baru[kol] = input(f"Masukkan {kol}: ").strip()
+        if menu_title == 'Akun Mahasiswa':
+            username_new = int(input(f"Masukan Username :"))
+            password_new = input(f"Masukan Password :")
 
-        # Tambahkan data baru ke DataFrame
-        df = pd.concat([df, pd.DataFrame([data_baru])], ignore_index=True)
-        df.to_csv(nama_file, index=False)
+            data_baru['Username'] = username_new
+            data_baru['Password'] = password_new
 
-        print("-" * 60)
-        print("Data berhasil ditambahkan.")
-        print("-" * 60)
+            # Tambahkan data baru ke DataFrame
+            df = pd.concat([df, pd.DataFrame([data_baru])], ignore_index=True)
+            df.to_csv(nama_file, index=False)
 
-        # Validasi input pilihan
-        while True:
-            tambah_lagi = input("Apakah Anda ingin menambah data lagi? [y/n]: ").strip().lower()
-            if tambah_lagi == 'y':
-                break  # Kembali ke awal loop untuk menambah data
-            elif tambah_lagi == 'n':
-                input("Klik ENTER untuk kembali ke menu.")
-                menu_kelola_data(menu_title, nama_file, kolom)
-                return  # Keluar dari fungsi setelah kembali ke menu
-            else:
-                print("Masukkan karakter yang benar [y/n].")
+            print("-" * 60)
+            print("Data berhasil ditambahkan.")
+            print("-" * 60)
+
+            # Validasi input pilihan
+            while True:
+                tambah_lagi = input("Apakah Anda ingin menambah data lagi? [y/n]: ").strip().lower()
+                if tambah_lagi == 'y':
+                    break  # Kembali ke awal loop untuk menambah data
+                elif tambah_lagi == 'n':
+                    input("Klik ENTER untuk kembali ke menu.")
+                    menu_kelola_data(menu_title, nama_file, kolom)
+                    return  # Keluar dari fungsi setelah kembali ke menu
+                else:
+                    print("Masukkan karakter yang benar [y/n].")
+        
+        else:
+            for kol in kolom:
+                data_baru[kol] = input(f"Masukkan {kol}: ").strip()
+
+            # Tambahkan data baru ke DataFrame
+            df = pd.concat([df, pd.DataFrame([data_baru])], ignore_index=True)
+            df.to_csv(nama_file, index=False)
+
+            print("-" * 60)
+            print("Data berhasil ditambahkan.")
+            print("-" * 60)
+
+            # Validasi input pilihan
+            while True:
+                tambah_lagi = input("Apakah Anda ingin menambah data lagi? [y/n]: ").strip().lower()
+                if tambah_lagi == 'y':
+                    break  # Kembali ke awal loop untuk menambah data
+                elif tambah_lagi == 'n':
+                    input("Klik ENTER untuk kembali ke menu.")
+                    menu_kelola_data(menu_title, nama_file, kolom)
+                    return  # Keluar dari fungsi setelah kembali ke menu
+                else:
+                    print("Masukkan karakter yang benar [y/n].")
 
 
     
