@@ -205,26 +205,6 @@ def ubah_password():
             kembali()
     kembali()
 
-# def ubah_password():
-#     file_csv = "data_admin.csv"
-#     username_target = input('Masukkan Username = ')
-#     password_baru = input('Masukkan Password Baru = ')
-#     df = pd.read_csv(file_csv)
-        
-#     # Ubah password berdasarkan username
-#     if username_target == "all":
-#         df['Password'] = password_baru
-#     else:
-#         # Ubah password untuk username tertentu
-#         if username_target in df['Username'].values:
-#             df.loc[df['Username'] == username_target, 'Password'] = password_baru
-#         else:
-#             print(f"Username '{username_target}' tidak ditemukan.")
-#             return
-
-#     df.to_csv(file_csv, index=False)
-#     print(f"Password berhasil diperbarui untuk '{username_target}'.")
-
 # ------------------------------------------------ FUNGSI UNTUK MENGELOLA DATA (CRUD) ------------------------------------------------ 
 
 def menu_kelola_data(menu_title, nama_file, kolom):
