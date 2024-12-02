@@ -205,3 +205,86 @@ def ubah_password():
             print('Mohon input dengan benar...')
             kembali()
     kembali()
+
+
+
+
+
+
+
+
+update: 
+
+def ubah_password(): # ini aku tambahin perulangan (while True)
+    clear()
+    file_csv = "data_admin.csv"
+
+    print('='*60)
+    print("UBAH PASSWORD".center(60))
+    print("-" * 60)
+    
+    username_target = input('Masukkan Username = ')
+    
+    # Baca file CSV
+    df = pd.read_csv(file_csv)
+    
+    if username_target not in df['Username'].values:
+        print(f"Username '{username_target}' tidak ditemukan.")
+        while True: 
+            yesno = input("Coba Lagi? Ketik 1 untuk mencoba lagi.\"ENTER\" untuk keluar : ")
+            if yesno == '1':
+                ubah_password()
+                return
+            elif yesno == "":
+                page_admin()
+            else:
+                print("Mohon menginputkan sesuai perintah (ketik 1 untuk mencoba lagi.\"ENTER\" untuk keluar).")
+    
+    # Konfirmasi password lama
+    password_lama = input('Masukkan Password Lama = ')
+    user_data = df.loc[df['Username'] == username_target]
+    
+    if user_data.iloc[0]['Password'] != password_lama:
+        print("Password lama tidak sesuai.")
+        while True:
+            yesno = input("Coba Lagi? Ketik 1 untuk mencoba lagi.\"ENTER\" untuk keluar : ")
+            if yesno == '1':
+                ubah_password()
+                return
+            elif yesno == "":
+                page_admin()
+            else:
+                print("Mohon menginputkan sesuai perintah (ketik 1 untuk mencoba lagi.\"ENTER\" untuk keluar).")
+
+    # Masukkan password baru
+    password_baru = input('Masukkan Password Baru = ')
+    
+    # Validasi konfirmasi password baru
+    def konfpass():
+        konfirmasi_password = input('Konfirmasi Password Baru = ')
+        if password_baru != konfirmasi_password:
+            konfir=input("Konfirmasi password baru tidak cocok. ketik 1 jika batal, ketik Tombol lainnya untuk melanjutkan. = ")
+            if konfir == '1':
+                page_admin()
+                return
+            else:
+                konfpass()
+                return
+    
+    konfpass()
+    # Ubah password
+    df.loc[df['Username'] == username_target, 'Password'] = password_baru
+    df.to_csv(file_csv, index=False)
+    print(f"Password berhasil diperbarui untuk '{username_target}'.")
+    def kembali():
+        back = input('Masukkan y jika selesai, masukkan n jika ingin merubah password lagi. (y/n): ').strip().lower()
+        if back == 'y':
+            page_admin()
+            return
+        elif back == 'n':
+            ubah_password()
+            return
+        else:
+            print('Mohon input dengan benar...')
+            kembali()      
+    kembali()
