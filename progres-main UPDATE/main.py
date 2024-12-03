@@ -727,7 +727,6 @@ def dashboard_mahasiswa():
         jadwal_mahasiswa()
     elif pilih == "2":
         main_krs()
-        print('ok')
     elif pilih == "3":
         start()
     elif pilih == "4":
