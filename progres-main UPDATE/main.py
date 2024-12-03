@@ -292,8 +292,11 @@ df.to_csv("mata_kuliah.csv", index=False)
 print("\nData telah disimpan ke mata_kuliah.csv")
 
 def tampilkan_mata_kuliah():
-    print("Tabel Mata Kuliah")
+    clear()
+    print("Tabel Mata Kuliah yang tersedia")
     print(df.to_string(index=False))
+    input('Tekan Enter Untuk Kembali')
+    clear()
 
 def pilih_mata_kuliah():
     krs = []
@@ -396,7 +399,7 @@ def main_menu_admin():
         elif pilihan == "4":
             menu_kelas("Kelas", file_kelas, kolom_kelas)
         elif pilihan == "5":
-            pass
+            tampilkan_mata_kuliah()
         elif pilihan == "6":
             jadwal()
         elif pilihan == "7":
